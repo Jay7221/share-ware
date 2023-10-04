@@ -94,6 +94,7 @@ class Sender:
 
 if __name__ == '__main__':
     host = '127.0.0.1'
+    host = input("Enter host ip : ")
     port = 5001
     credentials = input("Enter credentials: ")
     sender = Sender(credentials=credentials)
