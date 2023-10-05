@@ -22,33 +22,39 @@ def setup_server():
     return server_socket
 
 
-def extract_and_install(zip_file_path, extraction_path):
+def extract(zip_file_path, extraction_path):
     try:
         with zipfile.ZipFile(zip_file_path, 'r') as zipf:
             zipf.extractall(extraction_path)
-
-        install_script = 'install.sh'
-        prev_path = os.getcwd()
-        os.chdir(extraction_path)
-        if os.path.exists(install_script):
-            subprocess.run(['sudo', 'bash', install_script])
-            print('Installation completed successfully.')
-        else:
-            print('The install.sh script was not found in the extracted folder.')
-        os.chdir(prev_path)
     except Exception as e:
         print(f'An error occurred: {str(e)}')
 
 
-def delete_package_installation(package_path):
+def install_package(package_name):
+    package_path = os.path.join(PACKAGE_PATH, package_name)
+    install_script = 'install.sh'
     prev_path = os.getcwd()
     os.chdir(package_path)
-    delete_script = 'delete.sh'
-    if os.path.exists(delete_script):
-        subprocess.run(['sudo', 'bash', delete_script])
+    if os.path.exists(install_script):
+        subprocess.run(['sudo', 'bash', install_script])
         print('Installation completed successfully.')
     else:
-        print('The delete.sh script was not found in the extracted folder.')
+        print(
+            f'The {install_script} script was not found in the extracted folder.')
+    os.chdir(prev_path)
+
+
+def delete_package(package_name):
+    package_path = os.path.join(PACKAGE_PATH, package_name)
+    delete_script = 'delete.sh'
+    prev_path = os.getcwd()
+    os.chdir(package_path)
+    if os.path.exists(delete_script):
+        subprocess.run(['sudo', 'bash', delete_script])
+        print('Deletion completed successfully.')
+    else:
+        print(
+            f'The {delete_script} script was not found in the extracted folder.')
     os.chdir(prev_path)
 
 
@@ -86,7 +92,9 @@ def receive_package(client_socket):
     print(f"Received: {zip_file_name}")
     package_name, ext = os.path.splitext(os.path.basename(zip_file_name))
     extraction_path = os.path.join('packages', package_name)
-    extract_and_install(zip_file_name, extraction_path)
+    extract(zip_file_name, extraction_path)
+    os.remove(zip_file_name)
+    install_package(package_name=package_name)
 
 
 if __name__ == '__main__':
@@ -101,6 +109,11 @@ if __name__ == '__main__':
             send_message(client_socket=client_socket, message="<OK>")
             if command == 'INSTALL':
                 receive_package(client_socket)
+            
+            if command == 'DELETE':
+                package_name = receive_command(client_socket=client_socket)
+                send_message(client_socket=client_socket, message="<OK>")
+                delete_package(package_name=package_name)
 
             client_socket.close()
 

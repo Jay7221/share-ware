@@ -92,8 +92,37 @@ def zip_and_send_package(package_name, s):
     if s:
         if send_file(zip_file_name, s):
             print(f"Package '{package_name}' sent successfully.")
-#        os.remove(zip_file_name)
+        os.remove(zip_file_name)
 
+
+def install_package(package_name, host, port):
+    try:
+        command = 'INSTALL'
+        s = connect_to_server(host=host, port=port)
+        send_command(command=command, s=s)
+        response = receive_message(s)
+        zip_and_send_package(package_name=package_name, s=s)
+    except Exception as e:
+        print(f"Exception occured: {str(e)}")
+    finally:
+        s.close()
+
+
+def delete_package(package_name, host, port):
+    command = 'DELETE'
+    try:
+        s = connect_to_server(host=host, port=port)
+        send_command(command=command, s=s)
+        response = receive_message(s)
+        send_command(command=package_name, s=s)
+        response = receive_message(s)
+    except Exception as e:
+        print(f"Exception occured: {str(e)}")
+    finally:
+        s.close()
+
+COMMANDS = ['INSTALL', 'DELETE']
+PACKAGES = os.listdir(PACKAGE_PATH)
 
 if __name__ == '__main__':
     if not os.path.exists(PACKAGE_PATH):
@@ -105,17 +134,15 @@ if __name__ == '__main__':
 
     while True:
         try:
-            s = connect_to_server(host=host, port=port)
             command = input("Enter command to send: ")
-            send_command(command=command, s=s)
-            response = receive_message(s)
-            print(f"Response: {response}")
+            print(PACKAGES)
+            package_name = input("Enter name of package: ")
             if command == 'INSTALL':
-                package_name = input("Enter the package to send : ")
-                zip_and_send_package(package_name=package_name, s=s)
-            elif command == 'QUIT':
+                install_package(package_name=package_name,
+                                host=host, port=port)
+            elif command == 'DELETE':
+                delete_package(package_name=package_name, host=host, port=port)
+            else:
                 break
         except Exception as e:
             print(f"Execption occred: {str(e)}")
-        finally:
-            s.close()
