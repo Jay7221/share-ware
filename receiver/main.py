@@ -5,7 +5,7 @@ import zipfile
 import subprocess
 
 # Constants
-SERVER_HOST = '0.0.0.0'
+SERVER_HOST = '127.1.0.4'
 SERVER_PORT = 5001
 BUFFER_SIZE = 1024
 SEPARATOR = "<SEPARATOR>"
@@ -32,6 +32,13 @@ def extract(zip_file_path, extraction_path):
 
 def install_package(package_name):
     package_path = os.path.join(PACKAGE_PATH, package_name)
+    if os.name == 'nt':
+        package_path = os.path.join(package_path, 'windows')
+    elif os.name == 'posix':
+        package_path = os.path.join(package_path, 'linux')
+    else:
+        print("Operating System not supported")
+        return
     install_script = 'install.sh'
     prev_path = os.getcwd()
     os.chdir(package_path)
