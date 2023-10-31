@@ -5,7 +5,7 @@ import zipfile
 import subprocess
 
 # Constants
-SERVER_HOST = '127.1.0.4'
+SERVER_HOST = '0.0.0.0'
 SERVER_PORT = 5001
 BUFFER_SIZE = 1024
 SEPARATOR = "<SEPARATOR>"
