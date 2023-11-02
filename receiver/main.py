@@ -70,8 +70,10 @@ def delete_package(package_name):
     prev_path = os.getcwd()
     os.chdir(package_path)
     if os.path.exists(delete_script):
-        subprocess.run(['sudo', 'bash', delete_script])
-        print('Deletion completed successfully.')
+        if os.name == 'nt':
+            subprocess.run([delete_script], shell=True, check=True)
+        else:
+            subprocess.run(['sudo', 'bash', delete_script])
     else:
         print(
             f'The {delete_script} script was not found in the extracted folder.')

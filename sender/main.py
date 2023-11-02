@@ -37,6 +37,8 @@ def install():
         for host in generate_ips(NETWORK_MASK):
             for port in PORTS:
                 try:
+                    # install_thread = threading.Thread(target=install_package, args=(package_name, host, port,))
+                    # install_thread.start()
                     install_package(package_name=package_name,
                                     host=host, port=port)
                 except AttributeError as e:
