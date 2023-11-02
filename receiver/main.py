@@ -44,7 +44,11 @@ def install_package(package_name):
     prev_path = os.getcwd()
     os.chdir(package_path)
     if os.path.exists(install_script):
-        subprocess.run(['sudo', 'bash', install_script])
+        if os.name == 'nt':
+            subprocess.run([install_script], shell=True, check=True)
+        else:
+            subprocess.run(['sudo', 'bash', install_script])
+
         print('Installation completed successfully.')
     else:
         print(

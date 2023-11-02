@@ -1,13 +1,16 @@
 #!/bin/bash
 
-echo Installing Node Js 
-echo As fast as we can
-# Add the Node.js repository and update package lists
-#curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+# Update your system's package list
+sudo apt update
 
-# Install Node.js and npm
-#sudo apt-get install -y nodejs
+# Install essential packages for building software
+sudo apt install -y software-properties-common
 
-# Verify the installation
-node -v
-npm -v
+# Add the repository for Python 3.9
+sudo add-apt-repository ppa:deadsnakes/ppa
+
+# Update the package list again
+sudo apt update
+
+# Install Python 3.9
+sudo apt install -y python3.9

@@ -1,16 +1,23 @@
 #!/bin/bash
 
-# Remove Node.js and npm
-sudo apt-get purge -y nodejs npm
+# Check if the script is run as root
+if [ "$EUID" -ne 0 ]; then
+	echo "Please run this script as root using sudo."
+	exit 1
+fi
 
-# Remove the NodeSource repository
-sudo rm -rf /etc/apt/sources.list.d/nodesource.list
+# List all Python-related packages
+python_packages=$(dpkg -l | grep '^ii' | grep -E 'python[0-9]\.[0-9]-minimal|python[0-9]\.[0-9]|python3[0-9]\.[0-9]' | awk '{print $2}')
 
-# Update package lists
-sudo apt-get update
+# Remove each Python-related package
+for package in $python_packages; do
+	apt-get --purge remove -y $package
+done
 
-# Manually remove any residual directories
-sudo rm -rf /usr/lib/node_modules
+# Autoremove any remaining dependencies
+apt-get autoremove -y
 
-# Manually remove any residual configuration files
-sudo rm -rf /etc/npmrc /usr/local/bin/npm /usr/local/share/man/man1/node* /usr/local/lib/dtrace/node.d /usr/local/include/node /usr/local/share/doc/node
+# Clean up
+apt-get clean
+
+echo "Python and related packages have been removed."

@@ -31,6 +31,7 @@ def on_address_change(*args):
 
 def install():
     package_name = selected_package.get()
+    print(f"Installing {package_name}")
     label.config(text=f"Installing {package_name}")
     try:
         for host in generate_ips(NETWORK_MASK):
