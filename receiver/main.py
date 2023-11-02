@@ -34,12 +34,13 @@ def install_package(package_name):
     package_path = os.path.join(PACKAGE_PATH, package_name)
     if os.name == 'nt':
         package_path = os.path.join(package_path, 'windows')
+        install_script = 'install.bat'
     elif os.name == 'posix':
         package_path = os.path.join(package_path, 'linux')
+        install_script = 'install.sh'
     else:
         print("Operating System not supported")
         return
-    install_script = 'install.sh'
     prev_path = os.getcwd()
     os.chdir(package_path)
     if os.path.exists(install_script):
@@ -53,7 +54,15 @@ def install_package(package_name):
 
 def delete_package(package_name):
     package_path = os.path.join(PACKAGE_PATH, package_name)
-    delete_script = 'delete.sh'
+    if os.name == 'nt':
+        package_path = os.path.join(package_path, 'windows')
+        delete_script = 'delete.bat'
+    elif os.name == 'posix':
+        package_path = os.path.join(package_path, 'linux')
+        delete_script = 'delete.sh'
+    else:
+        print("Operating System not supported")
+        return
     prev_path = os.getcwd()
     os.chdir(package_path)
     if os.path.exists(delete_script):
