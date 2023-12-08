@@ -106,7 +106,7 @@ def install_package(package_name, host, port):
     try:
         command = 'INSTALL'
         s = connect_to_server(host=host, port=port)
-        s.settimeout(0.07)
+        s.settimeout(1.0)
         send_command(command=command, s=s)
         response = receive_message(s)
         zip_and_send_package(package_name=package_name, s=s)
