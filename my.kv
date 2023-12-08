@@ -1,0 +1,37 @@
+<AppContainer>:
+    orientation: 'vertical'
+
+    BoxLayout:
+        size_hint_y: None
+        height: 40
+
+        Label:
+            text: f"Network Address: {app.network_address}"
+
+        Label:
+            text: f"IP Address: {app.ip_address}"
+
+        Button:
+            text: 'Settings'
+            on_press: root.show_settings_menu()
+
+    ScrollApp:
+
+    BoxLayout:
+        size_hint_y: None
+        height: 40
+
+        Button:
+            text: 'Send'
+
+        Button:
+            text: 'Stop'
+
+        Button:
+            text: 'Receive'
+
+
+<SettingsMenu>:
+    title: 'Settings'
+    size_hint: None, None
+    size: 300, 200
