@@ -1,15 +1,33 @@
 <AppContainer>:
     orientation: 'vertical'
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1  # Dark blue background color
+        Rectangle:
+            pos: self.pos
+            size: self.size
 
     BoxLayout:
+        canvas.before:
+            Color:
+                rgba: 0, 0, 0, 1  # Dark blue background color
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
         size_hint_y: None
         height: 40
 
-        Label:
-            text: f"Network Address: {app.network_address}"
+        BoxLayout:
+            orientation: "vertical"
 
-        Label:
-            text: f"IP Address: {app.ip_address}"
+            Label:
+                text: f"Network: {app.network_address}"
+                color: 1, 1, 1, 1  # White text color
+
+            Label:
+                text: f"IP: {app.ip_address}"
+                color: 1, 1, 1, 1  # White text color
 
         Button:
             text: 'Settings'
@@ -17,21 +35,41 @@
 
     ScrollApp:
 
-    BoxLayout:
+
+    ControlPanel:
         size_hint_y: None
         height: 40
 
-        Button:
-            text: 'Send'
-
-        Button:
-            text: 'Stop'
-
-        Button:
-            text: 'Receive'
 
 
 <SettingsMenu>:
     title: 'Settings'
-    size_hint: None, None
-    size: 300, 200
+    size_hint: .4, .4
+    BoxLayout:
+        orientation: "vertical"
+        Button:
+            text: "Hello World"
+        Label:
+            text: f"Network Address: {app.network_address}"
+            color: 1, 1, 1, 1  # White text color
+
+        TextInput:
+            hint_text: 'Network Address'
+            text: app.network_address
+            multiline: False
+            height: 20
+
+        Label:
+            text: f"IP Address: {app.ip_address}"
+            color: 1, 1, 1, 1  # White text color
+
+        TextInput:
+            hint_text: 'IP Address'
+            text: app.ip_address
+            multiline: False
+
+        ToggleButton:
+            text: 'Send to Network'
+            group: 'send_option'
+            state: 'down' if app.send_to_network else 'normal'
+            on_press: root.on_toggle_press(self)
