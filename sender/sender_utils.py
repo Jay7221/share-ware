@@ -7,6 +7,8 @@ SEPARATOR = "<SEPARATOR>"
 BUFFER_SIZE = 4096
 PACKAGE_PATH = 'packages'
 
+PORTS = [5001]
+
 
 def connect_to_server(host, port):
     try:
@@ -130,6 +132,29 @@ def delete_package(package_name, host, port):
         # print(f"Exception occured: {str(e)}")
     finally:
         s.close()
+
+
+def generate_ips(network_mask):
+    try:
+        network = ipaddress.IPv4Network(network_mask, strict=True)
+        all_ips = list(map(str, network.hosts()))
+
+        return all_ips
+    except ValueError as e:
+        return str(e)
+
+
+def install_package_to_network(package_name, network_address, ports=PORTS):
+    for ip in generate_ips(network_address):
+        for port in ports:
+            install_package(package_name, ip, port)
+
+
+def delete_package_to_network(package_name, network_address, ports=PORTS):
+    for ip in generate_ips(network_address):
+        for port in ports:
+            delete_package(package_name, ip, port)
+
 
 COMMANDS = ['INSTALL', 'DELETE']
 PACKAGES = os.listdir(PACKAGE_PATH)

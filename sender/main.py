@@ -3,7 +3,7 @@ import os
 import tkinter as tk
 import threading
 from tkinter import Tk, StringVar, OptionMenu, Button, Label, Entry, messagebox, ttk
-from sender_utils import install_package, delete_package
+from sender_utils import install_package, delete_package, stop_receiver
 
 import time
 import ipaddress
@@ -49,8 +49,6 @@ def install():
                         "Package has been installed on avaliable PCs")
 
 
-
-
 def delete():
     package_name = selected_package.get()
     label.config(text=f"Deleting {package_name}")
@@ -58,7 +56,8 @@ def delete():
         for host in generate_ips(NETWORK_MASK):
             for port in PORTS:
                 try:
-                    delete_package(package_name=package_name, host=host, port=port)
+                    delete_package(package_name=package_name,
+                                   host=host, port=port)
                 except Exception as e:
                     print(f"Exception occured: {e}")
     except Exception as e:
@@ -66,16 +65,36 @@ def delete():
     messagebox.showinfo("Package Deleteion",
                         "Package has been deleted on avaliable PCs")
 
+
+def stop():
+    label.config(text=f"Stopping Receivers")
+    try:
+        for host in generate_ips(NETWORK_MASK):
+            for port in PORTS:
+                try:
+                    stop_receiver(host, port)
+                except Exception as e:
+                    print(f"Exception occured: {e}")
+    except Exception as e:
+        print(f"Exception occured: {e}")
+
+
 install_thread = threading.Thread(target=install)
 delete_thread = threading.Thread(target=delete)
+stop_thread = threading.Thread(target=stop)
+
+
 def install_button():
     install_thread.start()
+
 
 def delete_button():
     delete_button.start()
 
+
 def stop_download():
-    pass
+    stop_thread.start()
+
 
 # Create object
 root = Tk()
