@@ -155,6 +155,16 @@ def delete_package_to_network(package_name, network_address, ports=PORTS):
         for port in ports:
             delete_package(package_name, ip, port)
 
+def stop_receiver(host, port):
+    command = 'QUIT'
+    try:
+        s = connect_to_server(host=host, port=port)
+        send_command(command=command, s=s)
+    except Exception as e:
+        raise e
+    finally:
+        s.close()
+
 
 COMMANDS = ['INSTALL', 'DELETE']
 PACKAGES = os.listdir(PACKAGE_PATH)
