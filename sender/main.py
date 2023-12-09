@@ -85,15 +85,15 @@ stop_thread = threading.Thread(target=stop)
 
 
 def install_button():
-    install_thread.start()
+    threading.Thread(target=install).start()
 
 
 def delete_button():
-    delete_button.start()
+    threading.Thread(target=delete).start()
 
 
 def stop_download():
-    stop_thread.start()
+    threading.Thread(target=stop).start()
 
 
 # Create object
