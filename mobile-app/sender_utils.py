@@ -159,13 +159,19 @@ def generate_ips(network_mask):
 def install_package_to_network(package_name, network_address, ports=PORTS):
     for ip in generate_ips(network_address):
         for port in ports:
-            install_package(package_name, ip, port)
+            try:
+                install_package(package_name, ip, port)
+            except Exception as e:
+                print(f"Exception occured: {e}")
 
 
 def delete_package_to_network(package_name, network_address, ports=PORTS):
     for ip in generate_ips(network_address):
         for port in ports:
-            delete_package(package_name, ip, port)
+            try:
+                delete_package(package_name, ip, port)
+            except Exception as e:
+                print(f"Exception occured: {e}")
 
 
 
