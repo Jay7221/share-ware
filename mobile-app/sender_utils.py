@@ -174,6 +174,14 @@ def delete_package_to_network(package_name, network_address, ports=PORTS):
                 print(f"Exception occured: {e}")
 
 
+def stop_to_network(network_address, ports=PORTS):
+    for ip in generate_ips(network_address):
+        for port in ports:
+            try:
+                stop_receiver(ip, port)
+            except Exception as e:
+                print(f"Exception occured: {e}")
+
 
 if __name__ == '__main__':
     COMMANDS = ['INSTALL', 'DELETE']

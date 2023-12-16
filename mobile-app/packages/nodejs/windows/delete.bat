@@ -1,24 +1,18 @@
 @echo off
-echo Uninstalling Node.js...
-
-:: Set the installation directory where Node.js is located
-set INSTALL_DIR=C:\Node
-
-:: Check if Node.js is installed in the specified directory
-if not exist %INSTALL_DIR% (
-    echo Node.js is not installed in %INSTALL_DIR%
-    exit /b
-)
-
-:: Uninstall Node.js
-msiexec /x %INSTALL_DIR%\nodejs\nodejs.msi /qn /l*v %TEMP%\nodejs_uninstall.log
-
-:: Check if the uninstallation was successful
-if not exist %INSTALL_DIR%\nodejs\nodejs.msi (
-    echo Node.js has been successfully uninstalled from %INSTALL_DIR%
-) else (
-    echo Uninstallation of Node.js failed. Please check %TEMP%\nodejs_uninstall.log for details.
-)
-
-:: Remove the installation directory
-rmdir /s /q %INSTALL_DIR%
+REM Uninstall node from the Programs and Features
+wmic product where "name like 'Node.js%%'" call uninstall /nointeractive
+REM Delete the node and npm folders from the Program Files
+rd /s /q "C:\Program Files\nodejs"
+rd /s /q "C:\Program Files (x86)\nodejs"
+REM Delete the node and npm folders from the AppData
+rd /s /q "%AppData%\npm"
+rd /s /q "%AppData%\npm-cache"
+REM Delete the node and npm paths from the environment variables
+for /f "tokens=2* delims= " %%a in ('reg query "HKCU\Environment" /v Path') do setx Path "%%b" /m
+for /f "tokens=2* delims= " %%a in ('reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v Path') do setx Path "%%b" /m
+setx Path "%Path:;C:\Program Files\nodejs\=%" /m
+setx Path "%Path:;C:\Program Files (x86)\nodejs\=%" /m
+setx Path "%Path:;%AppData%\npm\=%" /m
+REM Verify that node is deleted
+node -v
+npm -v

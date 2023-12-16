@@ -13,7 +13,7 @@ from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.properties import StringProperty
-from sender_utils import install_package_to_network, delete_package_to_network
+from sender_utils import install_package_to_network, delete_package_to_network, stop_to_network
 
 PACKAGE_PATH = 'packages'
 if not os.path.exists(PACKAGE_PATH):
@@ -112,7 +112,7 @@ class ControlPanel(BoxLayout):
         super().__init__(**kwargs)
 
         send_button = Button(text="Send", on_press=self.send_packages)
-        receive_button = Button(text="Receive", on_press=self.receive_packages)
+        receive_button = Button(text="Stop", on_press=self.receive_packages)
         delete_button = Button(text="Delete", on_press=self.delete_package)
         self.add_widget(send_button)
         self.add_widget(receive_button)
@@ -137,7 +137,12 @@ class ControlPanel(BoxLayout):
                 print(e)
 
     def receive_packages(self, instance):
-        print("Receiving packages")
+        print("Stopping receiver")
+        network_address = App.get_running_app().network_address
+        try:
+            stop_to_network(network_address)
+        except Exception as e:
+            print(e)
 
 
 class MyApp(App):
